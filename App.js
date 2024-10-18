@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome, MaterialIcons, Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import MapView, { Marker } from 'react-native-maps';
 
 // Imagens de fundo e perfil
 import backgroundImage from './assets/neuroguides-logo.jpg';  // Imagem de fundo
@@ -102,7 +103,7 @@ function HomeScreen({ posts, navigation }) {
           <TouchableOpacity>
             <FontAwesome name="home" size={24} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Map')}>
             <MaterialIcons name="map" size={24} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('CreatePost')}>
@@ -177,6 +178,27 @@ function CreatePostScreen({ addPost, navigation }) {
   );
 }
 
+// Tela de Mapa (Localização de Manaus)
+function MapScreen() {
+  return (
+    <MapView
+      style={{ flex: 1 }}
+      initialRegion={{
+        latitude: -3.1190275,  // Latitude de Manaus
+        longitude: -60.0217314,  // Longitude de Manaus
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }}
+    >
+      <Marker
+        coordinate={{ latitude: -3.1190275, longitude: -60.0217314 }}
+        title={"Manaus"}
+        description={"Capital do Amazonas"}
+      />
+    </MapView>
+  );
+}
+
 export default function App() {
   const [posts, setPosts] = useState([
     { id: '1', title: 'Post 1', content: 'Este é o conteúdo do post 1.', image: null },
@@ -198,6 +220,7 @@ export default function App() {
         <Stack.Screen name="CreatePost">
           {(props) => <CreatePostScreen {...props} addPost={addPost} />}
         </Stack.Screen>
+        <Stack.Screen name="Map" component={MapScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -225,15 +248,17 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 40,
     backgroundColor: '#fff',
-    borderRadius: 5,
-    marginBottom: 20,
+    borderRadius: 8,
     paddingHorizontal: 10,
+    marginBottom: 10,
   },
   button: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#007BFF',
     padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
+    borderRadius: 8,
+    marginTop: 10,
+    width: '80%',
+    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
@@ -242,8 +267,7 @@ const styles = StyleSheet.create({
   uploadedImage: {
     width: 200,
     height: 200,
-    borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
   },
   homeContainer: {
     flex: 1,
@@ -254,18 +278,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 10,
+    paddingHorizontal: 10,
     marginBottom: 20,
-    elevation: 3,
-    },
+  },
   searchInput: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 16,
+    height: 40,
   },
   profileImage: {
     width: 40,
     height: 40,
+    borderRadius: 20,
   },
   post: {
     backgroundColor: '#fff',
@@ -277,7 +301,6 @@ const styles = StyleSheet.create({
   postTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
   },
   postImage: {
     width: '100%',
@@ -288,9 +311,7 @@ const styles = StyleSheet.create({
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 10,
-    backgroundColor: '#fff',
+    padding: 10,
     borderTopWidth: 1,
     borderColor: '#e0e0e0',
   },
